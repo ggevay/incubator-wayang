@@ -65,10 +65,6 @@
             <groupId>org.emmalanguage</groupId>
             <artifactId>emma-language</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.emmalanguage</groupId>
-            <artifactId>emma-lib</artifactId>
-        </dependency>
         <!-- Emma (test jars) -->
         <dependency>
             <groupId>org.emmalanguage</groupId>
