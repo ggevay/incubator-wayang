@@ -28,7 +28,7 @@
     </parent>
 
     <groupId>org.emmalanguage</groupId>
-    <artifactId>emma-api-emma</artifactId>
+    <artifactId>wayang-api-emma</artifactId>
     <version>0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 

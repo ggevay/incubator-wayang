@@ -20,8 +20,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>emma</artifactId>
         <groupId>org.emmalanguage</groupId>
+        <artifactId>wayang-api-emma</artifactId>
         <version>0.2-SNAPSHOT</version>
     </parent>
 
