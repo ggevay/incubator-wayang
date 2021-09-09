@@ -468,6 +468,15 @@
                                     </goals>
                                 </execution-->
                             </executions>
+                            <configuration>
+                                <compilerPlugins>
+                                    <compilerPlugin>
+                                        <groupId>org.scalamacros</groupId>
+                                        <artifactId>paradise_${scala.version}</artifactId>
+                                        <version>2.1.0</version>
+                                    </compilerPlugin>
+                                </compilerPlugins>
+                            </configuration>
                         </plugin>
                         <plugin>
                             <artifactId>maven-jar-plugin</artifactId>
