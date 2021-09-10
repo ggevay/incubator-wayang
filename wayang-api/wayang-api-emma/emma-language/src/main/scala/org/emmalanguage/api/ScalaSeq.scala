@@ -101,9 +101,6 @@ class ScalaSeq[A] private[api]
   def writeText(path: String): Unit =
     TextSupport.write(path)(rep map (_.toString))
 
-  def writeParquet(path: String, format: Parquet)(implicit converter: ParquetConverter[A]): Unit =
-    ParquetScalaSupport(format).write(path)(rep)
-
   override def collect(): Seq[A] =
     rep
 }
@@ -129,10 +126,6 @@ object ScalaSeq extends DataBagCompanion[LocalEnv] {
   def readCSV[A: Meta : CSVConverter](path: String, format: CSV)(
     implicit env: LocalEnv
   ): DataBag[A] = new ScalaSeq(CSVScalaSupport(format).read(path).toStream)
-
-  def readParquet[A: Meta : ParquetConverter](path: String, format: Parquet)(
-    implicit env: LocalEnv
-  ): DataBag[A] = new ScalaSeq(ParquetScalaSupport(format).read(path).toStream)
 
   // This is used in the code generation in TranslateToDataflows when inserting `collect` calls
   def fromDataBag[A: Meta](bag: DataBag[A]): DataBag[A] =
