@@ -21,8 +21,6 @@ import test.schema.Literature._
 
 class WayangDataQuantaSpec extends DataBagSpec with WayangAware {
 
-  override val supportsParquet = false
-
   override type TestBag[A] = DataQuantaDataBag[A]
   override type BackendContext = WayangContext
 

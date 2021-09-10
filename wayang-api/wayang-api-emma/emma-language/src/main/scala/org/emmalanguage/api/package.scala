@@ -20,17 +20,11 @@ package object api {
   type CSVSupport[A] = io.csv.CSVScalaSupport[A]
   type CSVConverter[A] = io.csv.CSVConverter[A]
   type CSVColumn[A] = io.csv.CSVColumn[A]
-  type Parquet = io.parquet.Parquet
-  type ParquetSupport[A] = io.parquet.ParquetScalaSupport[A]
-  type ParquetConverter[A] = io.parquet.ParquetConverter[A]
   type Meta[A] = scala.reflect.runtime.universe.TypeTag[A]
 
   val CSV = io.csv.CSV
   val CSVScalaSupport = io.csv.CSVScalaSupport
   val CSVConverter = io.csv.CSVConverter
   val CSVColumn = io.csv.CSVColumn
-  val Parquet = io.parquet.Parquet
-  val ParquetScalaSupport = io.parquet.ParquetScalaSupport
-  val ParquetConverter = io.parquet.ParquetConverter
   val TextSupport = io.text.TextSupport
 }

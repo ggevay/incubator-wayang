@@ -182,15 +182,6 @@ trait DataBag[A] extends Serializable {
   def writeText(path: String): Unit
 
   /**
-   * Writes a DataBag into the specified `path` in a CSV format.
-   *
-   * @param path      The location where the data will be written.
-   * @param format    The CSV format configuration
-   * @param converter A converter to use for element serialization.
-   */
-  def writeParquet(path: String, format: Parquet)(implicit converter: ParquetConverter[A]): Unit
-
-  /**
    * Converts the DataBag back into a scala Seq.
    * Warning: Do not call this on DataBags that are too large to fit on one machine!
    *
@@ -415,16 +406,6 @@ trait DataBagCompanion[E] {
    * @tparam A the type of elements to read.
    */
   def readCSV[A: Meta : CSVConverter](path: String, format: CSV)(implicit env: E): DataBag[A]
-
-  /**
-   * Reads a DataBag into the specified `path` using a Parquet format.
-   *
-   * @param path   The location where the data will be read from.
-   * @param format The Parquet format configuration.
-   * @param env    An execution environment instance.
-   * @tparam A the type of elements to read.
-   */
-  def readParquet[A: Meta : ParquetConverter](path: String, format: Parquet)(implicit env: E): DataBag[A]
 }
 
 object DataBag extends DataBagCompanion[LocalEnv] {
@@ -444,7 +425,4 @@ object DataBag extends DataBagCompanion[LocalEnv] {
 
   def readCSV[A: Meta : CSVConverter](path: String, format: CSV)(implicit env: LocalEnv): DataBag[A] =
     ScalaSeq.readCSV[A](path, format)
-
-  def readParquet[A: Meta : ParquetConverter](path: String, format: Parquet)(implicit env: LocalEnv): DataBag[A] =
-    ScalaSeq.readParquet(path, format)
 }

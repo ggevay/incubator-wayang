@@ -37,9 +37,6 @@ trait DataBagSpec extends FreeSpec with Matchers with PropertyChecks with DataBa
   // indicates that the backend supports CSV
   val supportsCSV = true
 
-  // indicates that the backend supports Parquet
-  val supportsParquet = true
-
   // ---------------------------------------------------------------------------
   // abstract trait methods
   // ---------------------------------------------------------------------------
@@ -310,42 +307,6 @@ trait DataBagSpec extends FreeSpec with Matchers with PropertyChecks with DataBa
     }
   }
 
-  "parquet support" - {
-    implicit val rand = new Random(4531442314L)
-    val format = Parquet()
-
-    // ensure that output path exists
-    Files.createDirectories(Paths.get(tempPath("test/io")))
-
-    "Book" - {
-      val exp = Seq(hhBook)
-      "can read native output" ifSupportsParquet withBackendContext { implicit ctx =>
-        val pat = path(s"books.native.parquet")
-        DataBag(exp).writeParquet(pat, format)
-        TestBag.readParquet[Book](pat, format) shouldEqual DataBag(exp)
-      }
-      "can read backend output" ifSupportsParquet withBackendContext { implicit ctx =>
-        val pat = path(s"books.$suffix.parquet")
-        TestBag(exp).writeParquet(pat, format)
-        TestBag.readParquet[Book](pat, format) shouldEqual DataBag(exp)
-      }
-    }
-
-    "Record" - {
-      val exp = parquetRecords()
-      "can read native output" ifSupportsParquet withBackendContext { implicit ctx =>
-        val pat = path(s"records.native.parquet")
-        DataBag(exp).writeParquet(pat, format)
-        TestBag.readParquet[ParquetRecord](pat, format).collect() should contain theSameElementsAs exp
-      }
-      "can read backend output" ifSupportsParquet withBackendContext { implicit ctx =>
-        val pat = path(s"records.$suffix.parquet")
-        TestBag(exp).writeParquet(pat, format)
-        TestBag.readParquet[ParquetRecord](pat, format).collect() should contain theSameElementsAs exp
-      }
-    }
-  }
-
   private def path(name: String): String =
     s"file://${tempPath("test/io")}/$name"
 
@@ -362,23 +323,6 @@ trait DataBagSpec extends FreeSpec with Matchers with PropertyChecks with DataBa
       sixth       = randString(quote),
       seventh     = if (r.nextBoolean()) Some(r.nextLong()) else None,
       nine        = r.nextFloat()
-      //@formatter:on
-    )
-
-  private def parquetRecords(
-    quote: Option[Char] = None
-  )(implicit r: Random): Seq[ParquetRecord] =
-    for (_ <- 1 to 1) yield ParquetRecord(
-      //@formatter:off
-      title       = r.nextInt(5).toShort,
-      name        = Name(
-        first     = randString(quote),
-        middle    = if (r.nextBoolean()) Some(randString(quote)) else None,
-        last      = randString(quote)
-      ),
-      dvalue      = r.nextDouble(),
-      svalue      = if (r.nextBoolean()) Some(r.nextInt(255).toShort) else None,
-      measures    = (1 to r.nextInt(1024)).map(_ => r.nextLong())
       //@formatter:on
     )
 
@@ -401,10 +345,6 @@ trait DataBagSpec extends FreeSpec with Matchers with PropertyChecks with DataBa
   protected final class DataBagSpecStringWrapper(string: String) {
     def ifSupportsCSV(f: => Unit): Unit =
       if (supportsCSV) string in f
-      else string ignore f
-
-    def ifSupportsParquet(f: => Unit): Unit =
-      if (supportsParquet) string in f
       else string ignore f
   }
 

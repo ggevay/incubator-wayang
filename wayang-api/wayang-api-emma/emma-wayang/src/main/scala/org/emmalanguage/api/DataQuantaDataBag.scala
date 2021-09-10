@@ -151,9 +151,6 @@ class DataQuantaDataBag[A: Meta] private[api]
   override def writeText(path: String): Unit =
     rep.writeTextFile(path, _.toString)
 
-  def writeParquet(path: String, format: Parquet)(implicit converter: ParquetConverter[A]): Unit =
-    ???
-
   override def collect(): Seq[A] = collected
 
   private lazy val collected: Seq[A] =
@@ -225,10 +222,6 @@ object DataQuantaDataBag extends DataBagCompanion[WayangContext] {
         for (line <- it) f(con.read(csv.parseLine(line), 0)(format))
       }
     }.toIterable, ProbabilisticDoubleInterval.ofExactly(1d)))
-
-  def readParquet[A: Meta : ParquetConverter](path: String, format: Parquet)(
-    implicit wayang: WayangContext
-  ): DataBag[A] = ???
 
   // ---------------------------------------------------------------------------
   // Implicit Rep -> DataBag conversion

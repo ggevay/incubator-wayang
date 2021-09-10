@@ -74,7 +74,6 @@ protected[emmalanguage] trait API extends AST {
     val collect               = op("collect")
     val as                    = op("as")
     val writeCSV              = op("writeCSV")
-    val writeParquet          = op("writeParquet")
     val writeText             = op("writeText")
     // Monad ops
     val map                   = op("map")
@@ -107,7 +106,7 @@ protected[emmalanguage] trait API extends AST {
     val bottom                = op("bottom")
     val top                   = op("top")
 
-    val sinkOps               = Set(collect, as, writeCSV, writeParquet, writeText)
+    val sinkOps               = Set(collect, as, writeCSV, writeText)
     val monadOps              = Set(map, flatMap, withFilter)
     val nestOps               = Set(groupBy)
     val boolAlgOps            = Set(union, distinct)
@@ -134,10 +133,9 @@ protected[emmalanguage] trait API extends AST {
     val empty                 = op("empty")
     val apply                 = op("apply")
     val readCSV               = op("readCSV")
-    val readParquet           = op("readParquet")
     val readText              = op("readText")
 
-    lazy val ops              = Set(from, empty, apply, readCSV, readParquet, readText)
+    lazy val ops              = Set(from, empty, apply, readCSV, readText)
     //@formatter:on
   }
 
@@ -286,8 +284,7 @@ protected[emmalanguage] trait API extends AST {
     val implicitTypes = Set(
       api.Type[org.emmalanguage.api.Meta[Any]].typeConstructor,
       api.Type[org.emmalanguage.api.LocalEnv],
-      api.Type[org.emmalanguage.io.csv.CSVConverter[Any]].typeConstructor,
-      api.Type[org.emmalanguage.io.parquet.ParquetConverter[Any]].typeConstructor
+      api.Type[org.emmalanguage.io.csv.CSVConverter[Any]].typeConstructor
     )
 
     object emma extends emmaAPI
@@ -301,7 +298,7 @@ protected[emmalanguage] trait API extends AST {
     object ScalaSeq$ extends DataBag$API(api.Sym[org.emmalanguage.api.ScalaSeq.type].asModule) {
       //@formatter:off
       val fromDataBag       = op("fromDataBag")
-      override lazy val ops = Set(fromDataBag, from, empty, apply, readCSV, readParquet, readText)
+      override lazy val ops = Set(fromDataBag, from, empty, apply, readCSV, readText)
       //@formatter:on
     }
 
