@@ -663,6 +663,7 @@
     <modules>
         <module>emma-language</module>
         <module>emma-examples</module>
+        <module>emma-wayang</module>
     </modules>
 
 </project>
