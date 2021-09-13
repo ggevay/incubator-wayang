@@ -20,7 +20,6 @@ package org.apache.wayang
 
 import _root_.java.lang.{Class => JavaClass, Iterable => JavaIterable}
 import _root_.java.util.function.{Consumer, ToLongBiFunction, ToLongFunction}
-
 import org.apache.wayang.basic.data.{Record, Tuple2 => WayangTuple2}
 import org.apache.wayang.core.api.WayangContext
 import org.apache.wayang.core.function.FunctionDescriptor.{SerializableBinaryOperator, SerializableFunction, SerializablePredicate}
@@ -30,7 +29,7 @@ import org.apache.wayang.core.optimizer.costs.{DefaultLoadEstimator, LoadEstimat
 import org.apache.wayang.core.plan.wayangplan.ElementaryOperator
 import org.apache.wayang.core.types.{BasicDataUnitType, DataSetType, DataUnitGroupType, DataUnitType}
 
-import scala.collection.JavaConversions
+import scala.collection.{JavaConversions, mutable}
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
 
@@ -139,7 +138,10 @@ package object api {
 
   implicit def toInterval(double: Double): ProbabilisticDoubleInterval = new ProbabilisticDoubleInterval(double, double, .99)
 
-  implicit def createPlanBuilder(wayangContext: WayangContext): PlanBuilder = new PlanBuilder(wayangContext)
+  private val planBuilderCache = new mutable.HashMap[WayangContext, PlanBuilder]
+
+  implicit def createOrGetPlanBuilder(wayangContext: WayangContext): PlanBuilder =
+    planBuilderCache.getOrElseUpdate(wayangContext, new PlanBuilder(wayangContext))
 
   implicit private[api] def wrap[Out: ClassTag](op: ElementaryOperator)(implicit planBuilder: PlanBuilder): DataQuanta[Out] =
     new DataQuanta[Out](op)
