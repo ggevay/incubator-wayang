@@ -575,4 +575,14 @@ class ApiTest {
     val expectedValues = Set("John", "Evelyn")
     Assert.assertEquals(expectedValues, result)
   }
+
+  @Test
+  def testPlanBuilderCache(): Unit = {
+    val wayang = new WayangContext().withPlugin(Java.basicPlugin).withPlugin(Spark.basicPlugin)
+
+    val coll = Seq(1, 2, 3)
+    val dq1 = wayang.loadCollection(coll)
+    val dq2 = wayang.loadCollection(coll)
+    dq1 union dq2 // This would fail if createOrGetPlanBuilder returned different instances
+  }
 }
