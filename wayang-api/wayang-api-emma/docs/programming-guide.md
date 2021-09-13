@@ -30,7 +30,7 @@ val squaresSeq = 1 to 42 map { x => (x, x * x) }
 val squaresBag = DataBag(squaresSeq)
 ```
 
-or by reading from a supported source, e.g. `CSV` or `Parquet`.
+or by reading from a supported source, e.g. `CSV`.
 
 
 ```scala

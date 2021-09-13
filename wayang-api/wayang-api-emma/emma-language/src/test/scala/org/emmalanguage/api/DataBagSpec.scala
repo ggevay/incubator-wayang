@@ -370,14 +370,14 @@ object DataBagSpec {
     nine        : Float
   )
 
-  case class ParquetRecord
-  (
-    title       : Short,
-    name        : Name,
-    dvalue      : Double,
-    svalue      : Option[Short],
-    measures    : Seq[Long]
-  )
+//  case class ParquetRecord
+//  (
+//    title       : Short,
+//    name        : Name,
+//    dvalue      : Double,
+//    svalue      : Option[Short],
+//    measures    : Seq[Long]
+//  )
 
   case class Name
   (

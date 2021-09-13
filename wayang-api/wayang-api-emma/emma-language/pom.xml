@@ -91,22 +91,22 @@
         </dependency>
 
         <!-- Parquet -->
-        <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-encoding</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-column</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-hadoop</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.parquet</groupId>-->
+<!--            <artifactId>parquet-common</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.parquet</groupId>-->
+<!--            <artifactId>parquet-encoding</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.parquet</groupId>-->
+<!--            <artifactId>parquet-column</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.parquet</groupId>-->
+<!--            <artifactId>parquet-hadoop</artifactId>-->
+<!--        </dependency>-->
 
         <!-- Logging -->
         <dependency>
