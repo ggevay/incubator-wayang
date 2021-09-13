@@ -170,7 +170,7 @@ trait DataBagSpec extends FreeSpec with Matchers with PropertyChecks with DataBa
       act shouldEqual DataBag(exp)
     }
 
-    "withFilter" in withBackendContext { implicit spark =>
+    "withFilter" in withBackendContext { implicit ctx =>
       val act = TestBag(Seq(hhBook))
         .withFilter(_.title == "The Hitchhiker's Guide to the Galaxy")
 
