@@ -93,6 +93,7 @@ class DataQuantaDataBag[A: Meta] private[api]
   // Partition-based Ops
   // -----------------------------------------------------
 
+  // (Don't forget to uncomment test in DataBagSpec after implementing this.)
   def sample(k: Int, seed: Long = 5394826801L): Vector[A] = ??? //{
 //    // sample per partition and sorted by partition ID
 //    val Seq(hd, tl@_*) = new DataSetUtils(rep).zipWithIndex
@@ -127,6 +128,7 @@ class DataQuantaDataBag[A: Meta] private[api]
 //    rs.toVector
 //  }
 
+  // (Don't forget to uncomment test in DataBagSpec after implementing this.)
   def zipWithIndex(): DataBag[(A, Long)] = ???
     //DataQuantaDataBag(new DataSetUtils(rep).zipWithIndex).map(_.swap)
 

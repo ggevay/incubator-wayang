@@ -19,7 +19,7 @@ package api
 import org.apache.wayang.core.api.WayangContext
 import test.schema.Literature._
 
-class WayangDataQuantaSpec extends DataBagSpec with WayangAware {
+class DataQuantaDataBagSpec extends DataBagSpec with WayangAware {
 
   override type TestBag[A] = DataQuantaDataBag[A]
   override type BackendContext = WayangContext
