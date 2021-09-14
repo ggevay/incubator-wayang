@@ -216,7 +216,6 @@ object DataQuantaDataBag extends DataBagCompanion[WayangContext] {
     implicit wayang: WayangContext
   ): DataBag[A] = DataQuantaDataBag(wayang
     .readTextFile(path) // format.charset is ignored for now. (comes from org.apache.spark.sql.DataFrameReader)
-    //todo: give selectivity of 1
     .mapPartitions((it: Iterable[String]) => new Traversable[A] {
       def foreach[U](f: A => U): Unit = {
         val csv = CSVScalaSupport[A](format).parser()
