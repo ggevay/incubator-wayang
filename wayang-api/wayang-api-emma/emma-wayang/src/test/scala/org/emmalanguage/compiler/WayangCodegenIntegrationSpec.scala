@@ -36,7 +36,8 @@ class WayangCodegenIntegrationSpec extends BaseCodegenIntegrationSpec
   "Convert from/to a Wayang DataQuanta" in withBackendContext(implicit env => {
     verify(u.reify {
       val xs = DataBag(1 to 1000).withFilter(_ > 800)
-      val ys = xs.as[DataQuanta].filter(_ < 200)
+      // We have to explicitly specify the default arguments to filter, because reify gives unusable code for unspecified defaults
+      val ys = xs.as[DataQuanta].filter(_ < 200, null, null, null)
       val zs = DataBag.from(ys)
       zs.size
     })
