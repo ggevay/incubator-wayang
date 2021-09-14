@@ -74,7 +74,7 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
   }
 
   def cancelIfWayang(): Unit = {
-    assume(this.getClass.getSimpleName != "WayangCodegenIntegrationSpec", "Ignored for mitos")
+    assume(this.getClass.getSimpleName != "WayangCodegenIntegrationSpec", "Ignored for Wayang")
   }
 
   def ignoreForWayang(test: =>Unit): Unit = {
