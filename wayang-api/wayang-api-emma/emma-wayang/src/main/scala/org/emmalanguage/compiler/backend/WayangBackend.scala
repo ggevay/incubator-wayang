@@ -21,7 +21,7 @@ import compiler.WayangCompiler
 
 import scala.collection.breakOut
 
-/** Translating to dataflows. */
+/** Translating from DataBag to DataQuantaDataBag. */
 private[compiler] trait WayangBackend extends Common {
   self: WayangCompiler =>
 
@@ -57,9 +57,10 @@ private[compiler] trait WayangBackend extends Common {
     } yield srcOp -> tgtOp) (breakOut): Map[u.MethodSymbol, u.MethodSymbol]
 
     /** Specialize backend for Wayang. */
-    val transform = ??? //TreeTransform("FlinkBackend.transform", tree => {
-//      val G = ControlFlow.cfg(tree)
-//      val C = Context.bCtxGraph(G)
+    val transform = TreeTransform("WayangBackend.transform", tree => {
+      val G = ControlFlow.cfg(tree)
+      val C = Context.bCtxGraph(G)
+
 //      val V = G.data.labNodes.map(_.label)
 //
 //      // 1) construct "lambdas that need to be adapted" -> "adapted lambdas" map
@@ -173,13 +174,13 @@ private[compiler] trait WayangBackend extends Common {
 //
 //        xs -> (zs +: ss)
 //      }) (breakOut): Map[u.TermSymbol, Seq[u.ValDef]]
-//
-//      api.BottomUp.transform({
-//        // specialize API calls
-//        case core.ValDef(lhs, core.DefCall(Some(core.Ref(t)), m, targs, argss))
-//          if C.label(lhs).contains(BCtx.Driver) && (T contains t) && (M contains m) =>
-//          core.ValDef(lhs, core.DefCall(Some(T(t)), M(m), targs, argss))
-//
+
+      api.BottomUp.transform({
+        // specialize API calls
+        case core.ValDef(lhs, core.DefCall(Some(core.Ref(t)), m, targs, argss))
+          if C.label(lhs).contains(BCtx.Driver) && (T contains t) && (M contains m) =>
+          core.ValDef(lhs, core.DefCall(Some(T(t)), M(m), targs, argss))
+
 //        // substitute broadcast lambdas
 //        case core.ValDef(lhs, _)
 //          if broadcastLambdas contains lhs =>
@@ -191,15 +192,15 @@ private[compiler] trait WayangBackend extends Common {
 //          core.Let(vals flatMap { case value@core.ValDef(lhs, _) =>
 //            broadcastOps.getOrElse(lhs, Seq(value))
 //          }, defs, expr)
-//      })._tree(tree)
-//    })
+      })._tree(tree)
+    })
 
-    private lazy val cs = Comprehension.Syntax(API.DataBag.sym)
+//    private lazy val cs = Comprehension.Syntax(API.DataBag.sym)
 
-    private def refsIn(argss: Seq[Seq[u.Tree]]): Seq[u.TermSymbol] =
-      argss.flatten collect {
-        case core.Ref(x) => x
-      }
+//    private def refsIn(argss: Seq[Seq[u.Tree]]): Seq[u.TermSymbol] =
+//      argss.flatten collect {
+//        case core.Ref(x) => x
+//      }
   }
 
 }
