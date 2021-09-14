@@ -73,12 +73,12 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
     actRslt shouldEqual expRslt
   }
 
-  def cancelIfmitos(): Unit = {
-    assume(this.getClass.getSimpleName != "mitosCodegenIntegrationSpec", "Ignored for mitos")
+  def cancelIfWayang(): Unit = {
+    assume(this.getClass.getSimpleName != "WayangCodegenIntegrationSpec", "Ignored for mitos")
   }
 
-  def ignoreFormitos(test: =>Unit): Unit = {
-    cancelIfmitos()
+  def ignoreForWayang(test: =>Unit): Unit = {
+    cancelIfWayang()
     test
   }
 
@@ -123,8 +123,8 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
   // --------------------------------------------------------------------------
 
   "Map" - {
-    // Ignored because the mitos compilation doesn't yet handle closures
-    "primitives" in ignoreFormitos(verify(u.reify {
+    // Ignored because the Wayang compilation doesn't yet handle closures
+    "primitives" in ignoreForWayang(verify(u.reify {
       val us = DataBag(1 to 3)
       val vs = DataBag(4 to 6)
       val ws = DataBag(7 to 9)
@@ -138,19 +138,17 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
       }
     }))
 
-    // Ignored because it freezes for some reason //fixme: why?
-    "tuples" in ignoreFormitos(verify(u.reify {
+    "tuples" in verify(u.reify {
       for { edge <- DataBag((1, 4, "A") :: (2, 5, "B") :: (3, 6, "C") :: Nil) }
         yield if (edge._1 < edge._2) edge._1 -> edge._2 else edge._2 -> edge._1
-    }))
+    })
 
-    // Ignored because it freezes for some reason //fixme: why?
     "case classes" in {
-      ignoreFormitos(verify(u.reify {
+      verify(u.reify {
         for { edge <- DataBag(graph) } yield
           if (edge.label == "B") LabelledEdge(edge.dst, edge.src, "B")
           else edge.copy(label = "Y")
-      }))
+      })
     }
   }
 
@@ -184,30 +182,26 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
       } yield word
     })
 
-    // Ignored because of a bug in the mitos compilation:
-    // When there are nested lambdas, the compilation gets the inner one out, regardless of the inner one referring to
-    // locals of the outer one.
-    "comprehension with correlated result" in ignoreFormitos(verify(u.reify {
+    "comprehension with correlated result" in verify(u.reify {
       for {
         line <- DataBag(jabberwocky)
         word <- DataBag(line split "\\W+")
       } yield (line, word)
-    }))
+    })
   }
 
   // --------------------------------------------------------------------------
   // Distinct and Union
   // --------------------------------------------------------------------------
 
-  // Distinct is not yet supported in the mitos compilation
   "Distinct" - {
-    "strings" in ignoreFormitos(verify(u.reify {
+    "strings" in verify(u.reify {
       DataBag(jabberwocky flatMap { _ split "\\W+" }).distinct
-    }))
+    })
 
-    "tuples" in ignoreFormitos(verify(u.reify {
+    "tuples" in verify(u.reify {
       DataBag(jabberwocky.flatMap { _ split "\\W+" } map {(_,1)}).distinct
-    }))
+    })
   }
 
   "Union" in {
@@ -294,20 +288,19 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
   // Group (with materialization) and FoldGroup (aggregations)
   // --------------------------------------------------------------------------
 
-  // GroupBy is not yet supported in the mitos compilation
   "Group" - {
-    "materialization" in ignoreFormitos(verify(u.reify {
+    "materialization" in verify(u.reify {
       DataBag(Seq(1)) groupBy Predef.identity
-    }))
+    })
 
-    "materialization with closure" in ignoreFormitos(verify(u.reify {
+    "materialization with closure" in verify(u.reify {
       val semiFinal = 8
       val bag = DataBag(new Random shuffle 0.until(100).toList)
       val top = for (g <- bag groupBy { _ % semiFinal })
         yield g.values.collect().sorted.take(semiFinal / 2).sum
 
       top.max
-    }))
+    })
   }
 
   "FoldGroup" - {
@@ -346,8 +339,8 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
       }
     })
 
-    // Fixme: Bug in the mitos compilation: the singSrc at the end should be a cross
-    "with duplicate group names" in ignoreFormitos(verify(u.reify {
+    // Ignored because of https://issues.apache.org/jira/browse/WAYANG-43
+    "with duplicate group names" in ignoreForWayang(verify(u.reify {
       val movies = DataBag(imdb)
 
       val leastPopular = for {
@@ -361,14 +354,13 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
       (leastPopular, mostPopular)
     }))
 
-    // GroupBy is not yet supported in the mitos compilation
-    "with multiple groups in the same comprehension" in ignoreFormitos(verify(u.reify {
+    "with multiple groups in the same comprehension" in verify(u.reify {
       for {
         can10 <- DataBag(cannes) groupBy { _.year / 10 }
         ber10 <- DataBag(berlin) groupBy { _.year / 10 }
         if can10.key == ber10.key
       } yield (can10.values.size, ber10.values.size)
-    }))
+    })
   }
 
   // --------------------------------------------------------------------------
@@ -399,7 +391,7 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
 
   "MutableBag" - {
     "create and collect" in {
-      cancelIfmitos() // MutableBag is not supported in the mitos compilation
+      cancelIfWayang() // MutableBag is not supported in the mitos compilation
 
       val act = withBackendContext(eval[Env => Seq[(Int, Long)]](actPipeline(u.reify(
         MutableBag(DataBag((1 to 100).map(x => x -> x.toLong))).bag().collect()
@@ -411,7 +403,7 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
     }
 
     "update and copy" in {
-      cancelIfmitos() // MutableBag is not supported in the mitos compilation
+      cancelIfWayang() // MutableBag is not supported in the mitos compilation
 
       val exp1 = (1 to 10).map(x => x -> (if (x % 2 == 0) 2L * x else x))
       val exp2 = (1 to 10).map(x => x -> (if (x % 2 == 0) 2L * x else x))
@@ -505,15 +497,14 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
   // --------------------------------------------------------------------------
 
   "CSV" - {
-    // Bug in the mitos compilation
-    "read/write case classes" in ignoreFormitos(verify(u.reify {
+    "read/write case classes" in verify(u.reify {
       val inputPath = materializeResource("/cinema/imdb.csv")
       val outputPath = Paths.get(s"${System.getProperty("java.io.tmpdir")}/emma/cinema/imdb_written.csv").toString
       // Read it, write it, and then read it again
       val imdb = DataBag.readCSV[ImdbMovie]("file://" + inputPath, CSV())
       imdb.writeCSV("file://" + outputPath, CSV())
       DataBag.readCSV[ImdbMovie]("file://" + outputPath, CSV()).collect().sortBy(_.title)
-    }))
+    })
   }
 
   // --------------------------------------------------------------------------
@@ -563,8 +554,8 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
       as union bs union cs union ds
     })
 
-    // Ignored because the mitos compilation doesn't yet handle closures
-    "Updated tmp sink (sieve of Eratosthenes)" in ignoreFormitos(verify(u.reify {
+    // Ignored because the Wayang compilation doesn't yet support `cache`
+    "Updated tmp sink (sieve of Eratosthenes)" in ignoreForWayang(verify(u.reify {
       val N = 20
       val payload = "#" * 100
 
@@ -595,8 +586,7 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
       positive union negative
     }))
 
-    // Bug in the mitos compilation
-    "val destructuring" in ignoreFormitos(verify(u.reify {
+    "val destructuring" in verify(u.reify {
       val resource = "file://" + materializeResource("/cinema/imdb.csv")
       val imdbTop100 = DataBag.readCSV[ImdbMovie](resource, CSV())
       val ratingsPerDecade = for {
@@ -611,7 +601,7 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
         m <- imdbTop100
         if r == (m.year, m.rating.round, 1L)
       } yield (r, m)
-    }))
+    })
   }
 }
 
