@@ -73,25 +73,6 @@ class ScalaSeq[A] private[api]
     ScalaSeq(rep.distinct)
 
   // -----------------------------------------------------
-  // Partition-based Ops
-  // -----------------------------------------------------
-
-  def sample(k: Int, seed: Long = 5394826801L): Vector[A] = {
-    val sample = new collection.mutable.ArrayBuffer[A](k)
-    val random = util.RanHash(seed)
-    for ((e, i) <- rep.zipWithIndex) {
-      if (i >= k) {
-        val j = random.nextInt(i + 1)
-        if (j < k) sample(j) = e
-      } else sample += e
-    }
-    sample.toVector
-  }
-
-  def zipWithIndex(): DataBag[(A, Long)] =
-    ScalaSeq(rep zip Stream.iterate(0L)(_ + 1))
-
-  // -----------------------------------------------------
   // Sinks
   // -----------------------------------------------------
 

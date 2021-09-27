@@ -60,7 +60,6 @@ private[backend] trait GenericSpecialization extends Common {
       val tgs: Map[u.TermSymbol, u.Tree] = Map(
         //@formatter:off
         API.DataBag$.sym    -> backendAPI.DataBag$.ref,
-        API.MutableBag$.sym -> backendAPI.MutableBag$.ref,
         API.Ops.sym         -> backendAPI.Ops.ref
         //@formatter:on
       )
@@ -70,7 +69,6 @@ private[backend] trait GenericSpecialization extends Common {
         Seq(
           //@formatter:off
           API.DataBag$    -> backendAPI.DataBag$,
-          API.MutableBag$ -> backendAPI.MutableBag$,
           API.Ops         -> backendAPI.Ops
           //@formatter:on
         ).flatMap({

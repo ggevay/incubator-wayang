@@ -75,22 +75,16 @@ trait WayangCompiler extends Compiler
     //lazy val implicitTypes = Set(TypeInformation, ExecutionEnvironment)
     lazy val implicitTypes = Set(WayangContext)
 
-    lazy val State = api.Type[org.emmalanguage.api.WayangMutableBag.State[Any, Any]].typeConstructor
-
     lazy val DataBag = new DataBagAPI(api.Sym[org.emmalanguage.api.DataQuantaDataBag[Any]].asClass)
 
     lazy val DataBag$ = new DataBag$API(api.Sym[org.emmalanguage.api.DataQuantaDataBag.type].asModule)
-
-    lazy val MutableBag = new MutableBagAPI(api.Sym[org.emmalanguage.api.WayangMutableBag[Any, Any]].asClass)
-
-    lazy val MutableBag$ = new MutableBag$API(api.Sym[org.emmalanguage.api.WayangMutableBag.type].asModule)
 
     lazy val Ops = new OpsAPI(api.Sym[org.emmalanguage.api.wayang.WayangOps.type].asModule)
 
     lazy val Ntv = new NtvAPI {}
 
     lazy val GenericOps = for {
-      ops <- Set(DataBag.ops, DataBag$.ops, MutableBag.ops, MutableBag$.ops, Ops.ops)
+      ops <- Set(DataBag.ops, DataBag$.ops, Ops.ops)
       sym <- ops
       if sym.info.takesTypeArgs
       res <- sym +: sym.overrides

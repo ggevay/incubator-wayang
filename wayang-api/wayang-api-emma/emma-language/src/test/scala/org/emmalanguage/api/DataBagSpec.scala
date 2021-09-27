@@ -229,44 +229,6 @@ trait DataBagSpec extends FreeSpec with Matchers with PropertyChecks with DataBa
     }
   }
 
-//  "sample" - {
-//    val s1 = 54326427L
-//    val s2 = 23546473L
-//
-//    "with k >= bag.size" in withBackendContext { implicit ctx =>
-//      val xs = TestBag(0 to 7)
-//      xs.sample(8) should contain theSameElementsAs (0 to 7)
-//      xs.sample(9) should contain theSameElementsAs (0 to 7)
-//    }
-//
-//    "with k < bag.size" in withBackendContext { implicit ctx =>
-//      val xs = TestBag(0 to 7)
-//      xs.sample(1) shouldEqual xs.sample(1)
-//      xs.sample(7) shouldEqual xs.sample(7)
-//    }
-//
-//    "with matching explicit seeds" in withBackendContext { implicit ctx =>
-//      val xs = TestBag(0 to 7)
-//      xs.sample(1, s1) shouldEqual xs.sample(1, s1)
-//      xs.sample(7, s1) shouldEqual xs.sample(7, s1)
-//    }
-//
-//    "with non-matching explicit seeds" in withBackendContext { implicit ctx =>
-//      val xs = TestBag(0 to 7)
-//      xs.sample(1, s1) shouldNot equal(xs.sample(1, s2))
-//      xs.sample(4, s1) shouldNot equal(xs.sample(4, s2))
-//    }
-//  }
-//
-//  "zipWithIndex" in withBackendContext { implicit ctx =>
-//    val xs = (('a' to 'z') ++ ('A' to 'Z')).map(_.toString)
-//
-//    val act = TestBag(xs).zipWithIndex().map(_._2)
-//    val exp = 0L to 51L
-//
-//    act shouldEqual DataBag(exp)
-//  }
-
   "empty" in withBackendContext(implicit ctx =>
     DataBag.empty[Nothing].isEmpty shouldBe true
   )

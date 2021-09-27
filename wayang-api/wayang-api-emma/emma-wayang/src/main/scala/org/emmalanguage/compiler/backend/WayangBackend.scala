@@ -35,7 +35,6 @@ private[compiler] trait WayangBackend extends Common {
     private val T = Map(
       //@formatter:off
       API.DataBag$.sym    -> DataBag$.ref,
-      API.MutableBag$.sym -> MutableBag$.ref,
       API.Ops.sym         -> Ops.ref
       //@formatter:on
     ): Map[u.TermSymbol, u.Tree]
@@ -45,7 +44,6 @@ private[compiler] trait WayangBackend extends Common {
       (srcAPI, tgtAPI) <- Seq(
         //@formatter:off
         API.DataBag$    -> DataBag$,
-        API.MutableBag$ -> MutableBag$,
         API.Ops         -> Ops
         //@formatter:on
       )

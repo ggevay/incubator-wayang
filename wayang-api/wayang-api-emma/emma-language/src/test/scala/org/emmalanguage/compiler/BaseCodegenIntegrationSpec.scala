@@ -385,69 +385,6 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
   }
 
   // --------------------------------------------------------------------------
-  // MutableBag
-  // --------------------------------------------------------------------------
-
-  "MutableBag" - {
-    "create and collect" in {
-      cancelIfWayang() // MutableBag is not supported in the mitos compilation
-
-      val act = withBackendContext(eval[Env => Seq[(Int, Long)]](actPipeline(u.reify(
-        MutableBag(DataBag((1 to 100).map(x => x -> x.toLong))).bag().collect()
-      ))))
-
-      val exp = (1 to 100).map(x => x -> x.toLong)
-
-      exp should contain theSameElementsAs act
-    }
-
-    "update and copy" in {
-      cancelIfWayang() // MutableBag is not supported in the mitos compilation
-
-      val exp1 = (1 to 10).map(x => x -> (if (x % 2 == 0) 2L * x else x))
-      val exp2 = (1 to 10).map(x => x -> (if (x % 2 == 0) 2L * x else x))
-      val exp3 = (1 to 10).map(x => x -> x.toLong)
-      val exp4 = (1 to 10).map(x => x -> (if (x % 2 == 0) 2L * x else x))
-      val exp5 = (1 to 10).map(x => x -> (if (x % 2 == 0) 2L * x else x))
-      val exp6 = (1 to 10).map(x => x -> (if (x % 2 != 0) 2L * x else x))
-
-      val act1 :: act2 :: act3 :: act4 :: act5 :: act6 :: Nil =
-        withBackendContext(eval[Env => List[Seq[(Int, Long)]]](actPipeline(u.reify {
-          val inputs = DataBag((1 to 10).map(x => x -> x.toLong))
-          val state1 = MutableBag(inputs)
-          val state2 = state1
-          val state3 = state1.copy()
-
-          state1.update(
-            inputs.withFilter(_._1 % 2 == 0).groupBy(_._1)
-          )((_, vOld, m) => vOld.map(_ + m.map(_._2).sum))
-
-          val act1 = state1.bag().collect()
-          val act2 = state2.bag().collect()
-          val act3 = state3.bag().collect()
-
-          state3.update(
-            inputs.withFilter(_._1 % 2 != 0).groupBy(_._1)
-          )((_, vOld, m) => vOld.map(_ + m.map(_._2).sum))
-
-          val act4 = state1.bag().collect()
-          val act5 = state2.bag().collect()
-          val act6 = state3.bag().collect()
-
-          act1 :: act2 :: act3 :: act4 :: act5 :: act6 :: Nil
-        })))
-
-      act1 should contain theSameElementsAs exp1
-      act2 should contain theSameElementsAs exp2
-      act3 should contain theSameElementsAs exp3
-
-      act4 should contain theSameElementsAs exp4
-      act5 should contain theSameElementsAs exp5
-      act6 should contain theSameElementsAs exp6
-    }
-  }
-
-  // --------------------------------------------------------------------------
   // Expression normalization
   // --------------------------------------------------------------------------
 

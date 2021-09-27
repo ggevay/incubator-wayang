@@ -84,9 +84,6 @@ protected[emmalanguage] trait API extends AST {
     // Set ops
     val union                 = op("union")
     val distinct              = op("distinct")
-    // Partition-based ops
-    val sample                = op("sample")
-    val zipWithIndex          = op("zipWithIndex")
     // Structural recursion & Folds
     val fold1                 = op("fold", List(1 /*alg*/ , 1 /*meta*/))
     val fold2                 = op("fold", List(1 /*zero*/ , 2 /*init, plus*/ , 1 /*meta*/))
@@ -110,7 +107,6 @@ protected[emmalanguage] trait API extends AST {
     val monadOps              = Set(map, flatMap, withFilter)
     val nestOps               = Set(groupBy)
     val boolAlgOps            = Set(union, distinct)
-    val partOps               = Set(sample, zipWithIndex)
     val foldOps               = Set(
       fold1, fold2,
       isEmpty, nonEmpty,
@@ -121,7 +117,7 @@ protected[emmalanguage] trait API extends AST {
       find, top, bottom
     )
 
-    val ops = sinkOps | monadOps | nestOps | boolAlgOps | partOps | foldOps
+    val ops = sinkOps | monadOps | nestOps | boolAlgOps | foldOps
     //@formatter:on
   }
 
@@ -136,28 +132,6 @@ protected[emmalanguage] trait API extends AST {
     val readText              = op("readText")
 
     lazy val ops              = Set(from, empty, apply, readCSV, readText)
-    //@formatter:on
-  }
-
-  class MutableBagAPI(cls: u.ClassSymbol) extends ClassAPI {
-    //@formatter:off
-    lazy val sym              = cls
-
-    val update                = op("update")
-    val bag                   = op("bag")
-    val copy                  = op("copy")
-
-    lazy val ops              = Set(update, bag, copy)
-    //@formatter:on
-  }
-
-  class MutableBag$API(mod: u.ModuleSymbol) extends ModuleAPI {
-    //@formatter:off
-    lazy val sym              = mod
-
-    val apply                 = op("apply")
-
-    lazy val ops              = Set(apply)
     //@formatter:on
   }
 
@@ -271,10 +245,6 @@ protected[emmalanguage] trait API extends AST {
 
     def DataBag$: DataBag$API
 
-    def MutableBag: MutableBagAPI
-
-    def MutableBag$: MutableBag$API
-
     def Ops: OpsAPI
   }
 
@@ -301,10 +271,6 @@ protected[emmalanguage] trait API extends AST {
       override lazy val ops = Set(fromDataBag, from, empty, apply, readCSV, readText)
       //@formatter:on
     }
-
-    object MutableBag extends MutableBagAPI(api.Sym[org.emmalanguage.api.MutableBag[Any, Any]].asClass)
-
-    object MutableBag$ extends MutableBag$API(api.Sym[org.emmalanguage.api.MutableBag.type].asModule)
 
     object Group extends GroupAPI
 

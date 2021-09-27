@@ -159,9 +159,8 @@ private[backend] trait Context extends Common {
     private lazy val dataParallelOps = {
       import API.DataBag._
       val bagOps = monadOps union nestOps union foldOps
-      val mutableBagOps = API.MutableBag.ops
       val combinatorOps = API.ComprehensionCombinators.ops
-      bagOps union mutableBagOps union combinatorOps
+      bagOps union combinatorOps
     }
 
     private def isDataParallelCall(x: u.TermSymbol, vd: u.ValDef): Boolean =

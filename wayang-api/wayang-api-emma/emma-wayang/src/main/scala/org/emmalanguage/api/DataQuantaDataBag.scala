@@ -90,50 +90,6 @@ class DataQuantaDataBag[A: Meta] private[api]
     DataQuantaDataBag(rep.distinct)
 
   // -----------------------------------------------------
-  // Partition-based Ops
-  // -----------------------------------------------------
-
-  // We would need zipWithIndex for this.
-  // (Don't forget to uncomment test in DataBagSpec after implementing this.)
-  def sample(k: Int, seed: Long = 5394826801L): Vector[A] = ??? //{
-//    // sample per partition and sorted by partition ID
-//    val Seq(hd, tl@_*) = new DataSetUtils(rep).zipWithIndex
-//      .mapPartition(new RichMapPartitionFunction[(Long, A), (Int, Array[Option[A]])] {
-//        @transient private var pid = 0
-//
-//        override def open(parameters: Configuration): Unit = {
-//          super.open(parameters)
-//          pid = getRuntimeContext.getIndexOfThisSubtask
-//        }
-//
-//        import scala.collection.JavaConversions._
-//
-//        def mapPartition(it: lang.Iterable[(Long, A)], out: Collector[(Int, Array[Option[A]])]): Unit = {
-//          val sample = Array.fill(k)(Option.empty[A])
-//          for ((i, e) <- it) {
-//            if (i >= k) {
-//              val j = util.RanHash(seed).at(i).nextLong(i + 1)
-//              if (j < k) sample(j.toInt) = Some(e)
-//            } else sample(i.toInt) = Some(e)
-//          }
-//          out.collect(pid -> sample)
-//        }
-//      }).collect().sortBy(_._1).map(_._2)
-//
-//    // merge the sequence of samples and filter None values
-//    val rs = for {
-//      Some(v) <- tl.foldLeft(hd)((xs, ys) => for ((x, y) <- xs zip ys) yield y orElse x)
-//    } yield v
-//
-//    // convert result to vector
-//    rs.toVector
-//  }
-
-  // (Don't forget to uncomment test in DataBagSpec after implementing this.)
-  def zipWithIndex(): DataBag[(A, Long)] = ???
-    //DataQuantaDataBag(new DataSetUtils(rep).zipWithIndex).map(_.swap)
-
-  // -----------------------------------------------------
   // Sinks
   // -----------------------------------------------------
 

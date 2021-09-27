@@ -134,33 +134,6 @@ trait DataBag[A] extends Serializable {
   def distinct: DataBag[A]
 
   // -----------------------------------------------------
-  // Partition-based Ops
-  // -----------------------------------------------------
-
-  /**
-   * Creates a sample of up to `k` elements using reservoir sampling initialized with the given `seed`.
-   *
-   * If the collection represented by the [[DataBag]] instance contains less then `n` elements,
-   * the resulting collection is trimmed to a smaller size.
-   *
-   * The method should be deterministic for a fixed [[DataBag]] instance with a materialized result.
-   * In other words, calling `xs.sample(n)(seed)` two times in succession will return the same result.
-   *
-   * The result, however, might vary between program runs and [[DataBag]] implementations.
-   */
-  def sample(k: Int, seed: Long = 5394826801L): Vector[A]
-
-  /**
-   * Zips the elements of this collection with a unique dense index.
-   *
-   * The method should be deterministic for a fixed [[DataBag]] instance with a materialized result.
-   * In other words, calling `xs.zipWithIndex()` two times in succession will return the same result.
-   *
-   * The result, however, might vary between program runs and [[DataBag]] implementations.
-   */
-  def zipWithIndex(): DataBag[(A, Long)]
-
-  // -----------------------------------------------------
   // Sinks
   // -----------------------------------------------------
 

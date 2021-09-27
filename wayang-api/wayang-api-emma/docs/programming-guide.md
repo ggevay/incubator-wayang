@@ -75,13 +75,6 @@ val flightsFromBerlin = for {
 
 In addition to comprehension syntax, the `DataBag` interface offers some combinators.
 
-You can `sample` `N` elemens using [reservoir sampling](https://en.wikipedia.org/wiki/Reservoir_sampling).
-
-
-```scala
-val samples = routes.map(_.src).sample(3)
-```
-
 You can combine two `DataBag[A]` instances by taking their (duplicate preserving) `union`, which corresponds to `UNION ALL` clause in SQL.
 
 
@@ -97,13 +90,6 @@ You can eliminate duplicates with `distinct`, corresponds to the `DISTINCT` clau
 ```scala
 val dupls = locs.collect().size
 val dists = locs.distinct.collect().size
-```
-
-You can extend all elements in a `DataBag` with a unique index.
-
-
-```scala
-val iroutes = routes.map(_.src).zipWithIndex
 ```
 
 ### Structural Recursion (Folds)
