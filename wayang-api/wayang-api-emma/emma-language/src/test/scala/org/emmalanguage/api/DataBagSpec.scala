@@ -183,7 +183,7 @@ trait DataBagSpec extends FreeSpec with Matchers with PropertyChecks with DataBa
     "for-comprehensions" in withBackendContext { implicit ctx =>
       val act = for {
         b <- TestBag(Seq(hhBook))
-        c <- ScalaSeq(hhCrts) // nested DataBag cannot be RDDDataBag, as those are not serializable
+        c <- SeqDataBag(hhCrts) // nested DataBag cannot be RDDDataBag, as those are not serializable
         if b.title == c.book.title
         if b.title == "The Hitchhiker's Guide to the Galaxy"
       } yield (b.title, c.name)

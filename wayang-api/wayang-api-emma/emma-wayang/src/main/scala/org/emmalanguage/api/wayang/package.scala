@@ -32,7 +32,7 @@ package object wayang {
   ): DataBag[A] => DataQuanta[A] = {
     case bag: DataQuantaDataBag[A] =>
       bag.rep
-    case bag: ScalaSeq[A] =>
+    case bag: SeqDataBag[A] =>
       wayang.loadCollection(bag.rep)
     case bag =>
       throw new RuntimeException(s"Cannot convert a DataBag of type ${bag.getClass.getSimpleName} to a Wayang DataQuanta")

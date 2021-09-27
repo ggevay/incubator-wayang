@@ -389,17 +389,17 @@ object DataBag extends DataBagCompanion[LocalEnv] {
   // -----------------------------------------------------
 
   def empty[A: Meta](implicit env: LocalEnv): DataBag[A] =
-    ScalaSeq.empty[A]
+    SeqDataBag.empty[A]
 
   def apply[A: Meta](values: Seq[A])(implicit env: LocalEnv): DataBag[A] =
-    ScalaSeq(values)
+    SeqDataBag(values)
 
   def apply[A: Meta](values: util.Collection[A])(implicit env: LocalEnv): DataBag[A] =
-    ScalaSeq(JavaConverters.collectionAsScalaIterableConverter(values).asScala.toSeq)
+    SeqDataBag(JavaConverters.collectionAsScalaIterableConverter(values).asScala.toSeq)
 
   def readText(path: String)(implicit env: LocalEnv): DataBag[String] =
-    ScalaSeq.readText(path)
+    SeqDataBag.readText(path)
 
   def readCSV[A: Meta : CSVConverter](path: String, format: CSV)(implicit env: LocalEnv): DataBag[A] =
-    ScalaSeq.readCSV[A](path, format)
+    SeqDataBag.readCSV[A](path, format)
 }

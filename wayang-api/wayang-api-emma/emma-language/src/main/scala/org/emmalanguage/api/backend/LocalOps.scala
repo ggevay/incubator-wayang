@@ -60,7 +60,7 @@ object LocalOps extends ComprehensionCombinators[LocalEnv] with Runtime[LocalEnv
   /** Fuse a groupBy and a subsequent fold into a single operator. */
   def foldGroup[A: Meta, B: Meta, K: Meta](
     xs: DataBag[A], key: A => K, alg: Alg[A, B]
-  )(implicit env: LocalEnv): DataBag[Group[K, B]] = ScalaSeq(xs.collect()
+  )(implicit env: LocalEnv): DataBag[Group[K, B]] = SeqDataBag(xs.collect()
     .foldLeft(Map.empty[K, B]) { (acc, x) =>
       val k = key(x)
       val s = alg.init(x)

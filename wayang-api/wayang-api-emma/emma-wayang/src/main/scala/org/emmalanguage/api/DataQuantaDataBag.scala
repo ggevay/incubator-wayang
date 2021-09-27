@@ -81,7 +81,7 @@ class DataQuantaDataBag[A: Meta] private[api]
   // -----------------------------------------------------
 
   override def union(that: DataBag[A]): DataBag[A] = that match {
-    case dbag: ScalaSeq[A] => this union DataQuantaDataBag(dbag.rep)
+    case dbag: SeqDataBag[A] => this union DataQuantaDataBag(dbag.rep)
     case dbag: DataQuantaDataBag[A] => DataQuantaDataBag(this.rep union dbag.rep)
     case _ => throw new IllegalArgumentException(s"Unsupported rhs for `union` of type: ${that.getClass}")
   }

@@ -16,12 +16,12 @@
 package org.emmalanguage
 package api
 
-class ScalaSeqSpec extends DataBagSpec {
+class SeqDataBagSpec extends DataBagSpec {
 
-  override type TestBag[A] = ScalaSeq[A]
+  override type TestBag[A] = SeqDataBag[A]
   override type BackendContext = LocalEnv
 
-  override val TestBag = ScalaSeq
+  override val TestBag = SeqDataBag
   override val suffix = "scala"
 
   override def withBackendContext[T](f: BackendContext => T): T =

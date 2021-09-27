@@ -263,9 +263,9 @@ protected[emmalanguage] trait API extends AST {
 
     object DataBag$ extends DataBag$API(api.Sym[org.emmalanguage.api.DataBag.type].asModule)
 
-    object ScalaSeq extends DataBagAPI(api.Sym[org.emmalanguage.api.ScalaSeq[Any]].asClass)
+    object ScalaSeq extends DataBagAPI(api.Sym[org.emmalanguage.api.SeqDataBag[Any]].asClass)
 
-    object ScalaSeq$ extends DataBag$API(api.Sym[org.emmalanguage.api.ScalaSeq.type].asModule) {
+    object ScalaSeq$ extends DataBag$API(api.Sym[org.emmalanguage.api.SeqDataBag.type].asModule) {
       //@formatter:off
       val fromDataBag       = op("fromDataBag")
       override lazy val ops = Set(fromDataBag, from, empty, apply, readCSV, readText)

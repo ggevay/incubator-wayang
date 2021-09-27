@@ -19,7 +19,7 @@ package api
 import alg.Alg
 
 /** A `DataBag` implementation backed by a Scala `Seq`. */
-class ScalaSeq[A] private[api]
+class SeqDataBag[A] private[api]
 (
   private[api] val rep: Seq[A]
 )(
@@ -45,32 +45,32 @@ class ScalaSeq[A] private[api]
   // -----------------------------------------------------
 
   override def map[B: Meta](f: (A) => B): DataBag[B] =
-    ScalaSeq(rep.map(f))
+    SeqDataBag(rep.map(f))
 
   override def flatMap[B: Meta](f: (A) => DataBag[B]): DataBag[B] =
-    ScalaSeq(rep.flatMap(x => f(x).collect()))
+    SeqDataBag(rep.flatMap(x => f(x).collect()))
 
   def withFilter(p: (A) => Boolean): DataBag[A] =
-    ScalaSeq(rep.filter(p))
+    SeqDataBag(rep.filter(p))
 
   // -----------------------------------------------------
   // Grouping
   // -----------------------------------------------------
 
   override def groupBy[K: Meta](k: (A) => K): DataBag[Group[K, DataBag[A]]] =
-    ScalaSeq(rep.groupBy(k).toSeq map { case (key, vals) => Group(key, ScalaSeq(vals)) })
+    SeqDataBag(rep.groupBy(k).toSeq map { case (key, vals) => Group(key, SeqDataBag(vals)) })
 
   // -----------------------------------------------------
   // Set operations
   // -----------------------------------------------------
 
   override def union(that: DataBag[A]): DataBag[A] = that match {
-    case dbag: ScalaSeq[A] => ScalaSeq(this.rep ++ dbag.rep)
+    case dbag: SeqDataBag[A] => SeqDataBag(this.rep ++ dbag.rep)
     case _ => that union this
   }
 
   override def distinct: DataBag[A] =
-    ScalaSeq(rep.distinct)
+    SeqDataBag(rep.distinct)
 
   // -----------------------------------------------------
   // Sinks
@@ -86,7 +86,7 @@ class ScalaSeq[A] private[api]
     rep
 }
 
-object ScalaSeq extends DataBagCompanion[LocalEnv] {
+object SeqDataBag extends DataBagCompanion[LocalEnv] {
 
   // ---------------------------------------------------------------------------
   // Constructors
@@ -94,23 +94,23 @@ object ScalaSeq extends DataBagCompanion[LocalEnv] {
 
   def empty[A: Meta](
     implicit env: LocalEnv
-  ): DataBag[A] = new ScalaSeq(Seq.empty)
+  ): DataBag[A] = new SeqDataBag(Seq.empty)
 
   def apply[A: Meta](values: Seq[A])(
     implicit env: LocalEnv
-  ): DataBag[A] = new ScalaSeq(values)
+  ): DataBag[A] = new SeqDataBag(values)
 
   def readText(path: String)(
     implicit env: LocalEnv
-  ): DataBag[String] = new ScalaSeq(TextSupport.read(path).toStream)
+  ): DataBag[String] = new SeqDataBag(TextSupport.read(path).toStream)
 
   def readCSV[A: Meta : CSVConverter](path: String, format: CSV)(
     implicit env: LocalEnv
-  ): DataBag[A] = new ScalaSeq(CSVScalaSupport(format).read(path).toStream)
+  ): DataBag[A] = new SeqDataBag(CSVScalaSupport(format).read(path).toStream)
 
   // This is used in the code generation in TranslateToDataflows when inserting `collect` calls
   def fromDataBag[A: Meta](bag: DataBag[A]): DataBag[A] =
-    new ScalaSeq(bag.collect())
+    new SeqDataBag(bag.collect())
 
   // ---------------------------------------------------------------------------
   // Implicit Rep -> DataBag conversion
@@ -119,6 +119,6 @@ object ScalaSeq extends DataBagCompanion[LocalEnv] {
   private[api] def unapply[A: Meta](
     bag: DataBag[A]
   ): Option[Seq[A]] = bag match {
-    case bag: ScalaSeq[A] => Some(bag.rep)
+    case bag: SeqDataBag[A] => Some(bag.rep)
   }
 }
