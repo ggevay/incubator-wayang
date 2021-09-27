@@ -76,7 +76,7 @@ object WayangOps extends ComprehensionCombinators[WayangContext] with Runtime[Wa
 
   private def sink[A: Meta](xs: DataQuanta[A])(implicit wayang: WayangContext): String = {
 //    val tempName = tempNames.next()
-//    xs.writeTextFile(tempPath(tempName), serialize it with e.g. chill)
+//    xs.writeTextFile(tempPath(tempName)) // write it with ObjectFileSink after it's merged in https://github.com/apache/incubator-wayang/pull/30
 //    tempName
     ??? // TODO: Needed for caching
   }
