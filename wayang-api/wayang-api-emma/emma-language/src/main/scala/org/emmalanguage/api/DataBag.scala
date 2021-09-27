@@ -18,9 +18,10 @@ package api
 
 import alg._
 
+import java.util
 import scala.language.higherKinds
-
 import java.util.UUID
+import scala.collection.JavaConverters
 
 /** An abstraction for homogeneous distributed collections. */
 trait DataBag[A] extends Serializable {
@@ -419,6 +420,9 @@ object DataBag extends DataBagCompanion[LocalEnv] {
 
   def apply[A: Meta](values: Seq[A])(implicit env: LocalEnv): DataBag[A] =
     ScalaSeq(values)
+
+  def apply[A: Meta](values: util.Collection[A])(implicit env: LocalEnv): DataBag[A] =
+    ScalaSeq(JavaConverters.collectionAsScalaIterableConverter(values).asScala.toSeq)
 
   def readText(path: String)(implicit env: LocalEnv): DataBag[String] =
     ScalaSeq.readText(path)

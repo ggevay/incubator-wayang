@@ -123,8 +123,7 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
   // --------------------------------------------------------------------------
 
   "Map" - {
-    // Ignored because the Wayang compilation doesn't yet handle closures
-    "primitives" in ignoreForWayang(verify(u.reify {
+    "primitives" in verify(u.reify {
       val us = DataBag(1 to 3)
       val vs = DataBag(4 to 6)
       val ws = DataBag(7 to 9)
@@ -136,7 +135,7 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
         else if (ws.exists(_ == x)) 1 * x
         else 0
       }
-    }))
+    })
 
     "tuples" in verify(u.reify {
       for { edge <- DataBag((1, 4, "A") :: (2, 5, "B") :: (3, 6, "C") :: Nil) }

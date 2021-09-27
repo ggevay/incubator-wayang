@@ -27,7 +27,7 @@ import java.util.Properties
 import java.util.UUID
 
 /**
- * Common methods and mixins for all compier specs
+ * Common methods and mixins for all compiler specs
  */
 trait BaseCompilerSpec extends FreeSpec with Matchers with PropertyChecks with TreeMatchers {
 

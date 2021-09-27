@@ -18,7 +18,6 @@ package compiler
 
 import compiler.backend.WayangBackend
 import compiler.opt.WayangOptimizations
-
 import cats.implicits._
 import com.typesafe.config.Config
 
@@ -55,7 +54,7 @@ trait WayangCompiler extends Compiler
     //@formatter:off
     val sym               = api.Sym[org.emmalanguage.api.wayang.WayangNtv.type].asModule
 
-    val iterate           = op("iterate")
+    //val iterate           = op("iterate") // when uncommenting this, don't forget to also uncomment in ops below
 
     val map               = op("map")
     val flatMap           = op("flatMap")
@@ -64,13 +63,13 @@ trait WayangCompiler extends Compiler
     val broadcast         = op("broadcast")
     val bag               = op("bag")
 
-    override lazy val ops = Set(iterate, map, flatMap, filter, broadcast, bag)
+    //override lazy val ops = Set(iterate, map, flatMap, filter, broadcast, bag)
+    override lazy val ops = Set(map, flatMap, filter, broadcast, bag)
     //@formatter:on
   }
 
   object WayangAPI extends BackendAPI {
-//    lazy val RuntimeContext = api.Type[org.apache.flink.api.common.functions.RuntimeContext]
-//    lazy val TypeInformation = api.Type[org.apache.flink.api.common.typeinfo.TypeInformation[Any]].typeConstructor
+    lazy val ExecutionContext = api.Type[org.apache.wayang.core.function.ExecutionContext]
     lazy val WayangContext = api.Type[org.apache.wayang.core.api.WayangContext]
 
     //lazy val implicitTypes = Set(TypeInformation, ExecutionEnvironment)
