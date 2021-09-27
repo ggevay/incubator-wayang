@@ -93,6 +93,7 @@ class DataQuantaDataBag[A: Meta] private[api]
   // Partition-based Ops
   // -----------------------------------------------------
 
+  // We would need zipWithIndex for this.
   // (Don't forget to uncomment test in DataBagSpec after implementing this.)
   def sample(k: Int, seed: Long = 5394826801L): Vector[A] = ??? //{
 //    // sample per partition and sorted by partition ID
