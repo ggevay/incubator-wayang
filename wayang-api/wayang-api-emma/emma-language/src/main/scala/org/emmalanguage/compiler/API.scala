@@ -117,6 +117,7 @@ protected[emmalanguage] trait API extends AST {
       find, top, bottom
     )
 
+    // When adding something to the following, consider also adding it to WayangSpecializeLoops.dataflowOps
     val ops = sinkOps | monadOps | nestOps | boolAlgOps | foldOps
     //@formatter:on
   }

@@ -54,7 +54,7 @@ trait WayangCompiler extends Compiler
     //@formatter:off
     val sym               = api.Sym[org.emmalanguage.api.wayang.WayangNtv.type].asModule
 
-    //val iterate           = op("iterate") // when uncommenting this, don't forget to also uncomment in ops below
+    val repeat           = op("repeat")
 
     val map               = op("map")
     val flatMap           = op("flatMap")
@@ -63,8 +63,7 @@ trait WayangCompiler extends Compiler
     val broadcast         = op("broadcast")
     val bag               = op("bag")
 
-    //override lazy val ops = Set(iterate, map, flatMap, filter, broadcast, bag)
-    override lazy val ops = Set(map, flatMap, filter, broadcast, bag)
+    override lazy val ops = Set(repeat, map, flatMap, filter, broadcast, bag)
     //@formatter:on
   }
 
@@ -72,7 +71,6 @@ trait WayangCompiler extends Compiler
     lazy val ExecutionContext = api.Type[org.apache.wayang.core.function.ExecutionContext]
     lazy val WayangContext = api.Type[org.apache.wayang.core.api.WayangContext]
 
-    //lazy val implicitTypes = Set(TypeInformation, ExecutionEnvironment)
     lazy val implicitTypes = Set(WayangContext)
 
     lazy val DataBag = new DataBagAPI(api.Sym[org.emmalanguage.api.DataQuantaDataBag[Any]].asClass)

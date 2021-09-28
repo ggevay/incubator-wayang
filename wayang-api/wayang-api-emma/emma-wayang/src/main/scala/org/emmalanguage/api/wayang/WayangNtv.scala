@@ -16,6 +16,8 @@
 package org.emmalanguage
 package api.wayang
 
+import org.apache.wayang.api.DataQuanta
+
 import _root_.java.lang.{Iterable => JavaIterable}
 import org.apache.wayang.core.api.WayangContext
 import org.apache.wayang.core.function.ExecutionContext
@@ -30,17 +32,17 @@ object WayangNtv {
 
   import Meta.Projections.ctagFor
 
-//  //----------------------------------------------------------------------------
-//  // Loops
-//  //----------------------------------------------------------------------------
-//
-//  def iterate[A: Meta](xs: DataBag[A])(
-//    N: Int, body: DataBag[A] => DataBag[A]
-//  )(
-//    implicit flink: FlinkEnv
-//  ): DataBag[A] = xs match {
-//    case DataQuantaDataBag(us) => DataQuantaDataBag(us.iterate(N)(unlift(body)))
-//  }
+  //----------------------------------------------------------------------------
+  // Loops
+  //----------------------------------------------------------------------------
+
+  def repeat[A: Meta](xs: DataBag[A])(
+    N: Int, body: DataBag[A] => DataBag[A]
+  )(
+    implicit wayang: WayangContext
+  ): DataBag[A] = xs match {
+    case DataQuantaDataBag(us) => DataQuantaDataBag(us.repeat(N, unlift(body)))
+  }
 
   //----------------------------------------------------------------------------
   // Broadcast support
@@ -101,13 +103,13 @@ object WayangNtv {
     }))
   }
 
-//  //----------------------------------------------------------------------------
-//  // Helper Objects and Methods
-//  //----------------------------------------------------------------------------
-//
-//  private def unlift[A: Meta](f: DataBag[A] => DataBag[A])(
-//    implicit flink: FlinkEnv
-//  ): DataSet[A] => DataSet[A] = xs => f(FlinkDataSet(xs)) match {
-//    case DataQuantaDataBag(ys) => ys
-//  }
+  //----------------------------------------------------------------------------
+  // Helper Objects and Methods
+  //----------------------------------------------------------------------------
+
+  private def unlift[A: Meta](f: DataBag[A] => DataBag[A])(
+    implicit wayang: WayangContext
+  ): DataQuanta[A] => DataQuanta[A] = xs => f(DataQuantaDataBag(xs)) match {
+    case DataQuantaDataBag(ys) => ys
+  }
 }
