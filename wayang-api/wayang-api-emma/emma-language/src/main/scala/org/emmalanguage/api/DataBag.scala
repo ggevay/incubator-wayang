@@ -391,10 +391,11 @@ object DataBag extends DataBagCompanion[LocalEnv] {
   def empty[A: Meta](implicit env: LocalEnv): DataBag[A] =
     SeqDataBag.empty[A]
 
+  // Be careful when adding overloads of apply: make sure that DataBag$API.apply picks up the correct overload
   def apply[A: Meta](values: Seq[A])(implicit env: LocalEnv): DataBag[A] =
     SeqDataBag(values)
 
-  def apply[A: Meta](values: util.Collection[A])(implicit env: LocalEnv): DataBag[A] =
+  def fromJavaCollection[A: Meta](values: util.Collection[A])(implicit env: LocalEnv): DataBag[A] =
     SeqDataBag(JavaConverters.collectionAsScalaIterableConverter(values).asScala.toSeq)
 
   def readText(path: String)(implicit env: LocalEnv): DataBag[String] =

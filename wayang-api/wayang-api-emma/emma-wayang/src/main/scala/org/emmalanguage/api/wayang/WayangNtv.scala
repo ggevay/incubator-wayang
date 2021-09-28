@@ -57,7 +57,7 @@ object WayangNtv {
   }
 
   def bag[A: Meta](xs: DataBag[A])(ctx: R): DataBag[A] = {
-    DataBag(ctx.getBroadcast[A](xs.uuid.toString))
+    DataBag.fromJavaCollection(ctx.getBroadcast[A](xs.uuid.toString))
   }
 
   def map[A: Meta, B: Meta](h: R => A => B)(xs: DataBag[A])(
