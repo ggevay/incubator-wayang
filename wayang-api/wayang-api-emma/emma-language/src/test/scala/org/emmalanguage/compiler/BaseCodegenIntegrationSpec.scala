@@ -490,8 +490,7 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
       as union bs union cs union ds
     })
 
-    // Ignored because the Wayang compilation doesn't yet support `cache`
-    "Updated tmp sink (sieve of Eratosthenes)" in ignoreForWayang(verify(u.reify {
+    "Updated tmp sink (sieve of Eratosthenes)" in verify(u.reify {
       val N = 20
       val payload = "#" * 100
 
@@ -520,7 +519,7 @@ abstract class BaseCodegenIntegrationSpec extends FreeSpec
       }
 
       positive union negative
-    }))
+    })
 
     "val destructuring" in verify(u.reify {
       val resource = "file://" + materializeResource("/cinema/imdb.csv")

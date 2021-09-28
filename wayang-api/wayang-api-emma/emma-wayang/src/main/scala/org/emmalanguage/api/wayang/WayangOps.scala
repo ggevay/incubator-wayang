@@ -31,6 +31,7 @@ import java.net.URI
 object WayangOps extends ComprehensionCombinators[WayangContext] with Runtime[WayangContext] {
 
   import Meta.Projections._
+  import org.apache.wayang.api._
 
   // ---------------------------------------------------------------------------
   // ComprehensionCombinators
@@ -60,7 +61,6 @@ object WayangOps extends ComprehensionCombinators[WayangContext] with Runtime[Wa
     xs match {
       case xs: DataQuantaDataBag[A] =>
         val sinkName = sink(xs.rep)
-        //xs.env.execute(s"emma-cache-$sinkName")
         DataQuantaDataBag(source[A](sinkName))
       case _ => xs
     }
@@ -75,16 +75,14 @@ object WayangOps extends ComprehensionCombinators[WayangContext] with Runtime[Wa
   }
 
   private def sink[A: Meta](xs: DataQuanta[A])(implicit wayang: WayangContext): String = {
-//    val tempName = tempNames.next()
-//    xs.writeTextFile(tempPath(tempName)) // write it with ObjectFileSink after it's merged in https://github.com/apache/incubator-wayang/pull/30
-//    tempName
-    ??? // TODO: Needed for caching
+    val tempName = tempNames.next()
+    xs.writeObjectFile(tempPath(tempName))
+    tempName
   }
 
   private def source[A: Meta](fileName: String)(implicit wayang: WayangContext): DataQuanta[A] = {
-    //val filePath = tempPath(fileName)
-    // read it back, and deserialize
-    ??? // TODO: Needed for caching
+    val filePath = tempPath(fileName)
+    wayang.readObjectFile(filePath)
   }
 
   lazy val tempBase =
