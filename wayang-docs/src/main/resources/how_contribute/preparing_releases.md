@@ -88,7 +88,7 @@ If you happen to have multiple keys, adding the following profile to your settin
 
 ## Creating a release branch
 
-For each new release we create a new branch at the beginning of a code-freeze phase. So if currently the project version in develop is `0.6.0-SNAPSHOT`, we create a branch `rel/0.6`. When creating the branch is exactly the moment in which the version in develop is incremented to the next minor version.
+For each new release we create a new branch at the beginning of a code-freeze phase. So if currently the project version in develop is `0.6.1-SNAPSHOT`, we create a branch `rel/0.6`. When creating the branch is exactly the moment in which the version in develop is incremented to the next minor version.
 
 This can and should be automated by the maven-release-plugin. Per default the plugin will ask for the working copy version during the build execution. This is the version the develop branch will be changed to.
 
