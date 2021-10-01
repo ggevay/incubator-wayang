@@ -22,7 +22,7 @@ import core.Core
 import scala.collection.mutable
 
 
-trait TreeNorm extends Common {
+private[compiler] trait TreeNorm extends Common {
   self: Core =>
 
   import UniverseImplicits._

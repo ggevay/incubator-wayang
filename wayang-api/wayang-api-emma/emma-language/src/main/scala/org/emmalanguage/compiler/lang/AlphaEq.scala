@@ -25,7 +25,7 @@ import org.scalactic.Or
 import scala.collection.mutable
 
 /** Provides alpha equivalence for Scala ASTs. */
-trait AlphaEq extends Common {
+private[compiler] trait AlphaEq extends Common {
 
   import u._
   import internal._

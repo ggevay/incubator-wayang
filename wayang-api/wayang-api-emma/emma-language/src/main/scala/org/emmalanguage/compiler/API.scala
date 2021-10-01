@@ -160,6 +160,11 @@ protected[emmalanguage] trait API extends AST {
     //@formatter:on
   }
 
+  class AlgAPI extends ClassAPI {
+    lazy val sym = api.Sym[org.emmalanguage.api.alg.Alg[Any, Any]].asClass
+    override def ops = Set()
+  }
+
   trait ComprehensionCombinatorsAPI[S <: u.Symbol] extends ReflectedSymbol[S] {
     //@formatter:off
     val cross                 = op("cross")
@@ -292,6 +297,8 @@ protected[emmalanguage] trait API extends AST {
     object GraphRepresentation extends GraphRepresentationAPI
 
     object DSCFAnnotations extends DSCFAnnotationsAPI
+
+    object Alg extends AlgAPI
 
   }
 

@@ -17,14 +17,12 @@ package org.emmalanguage
 package compiler
 
 import backend.GenericBackend
-import lang.AlphaEq
+import lang.{AlphaEq, TreeNorm, WrapScalars}
 import lang.core.Core
 import lang.source.Source
-import lang.TreeNorm
 import lib.Lib
 import opt.Optimizations
 import tools.GraphTools
-
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions
@@ -44,7 +42,8 @@ trait Compiler extends AlphaEq
   with Core
   with GenericBackend
   with GraphTools
-  with Optimizations {
+  with Optimizations
+  with WrapScalars {
 
   import UniverseImplicits._
 
