@@ -28,6 +28,7 @@
 
     <artifactId>emma-examples</artifactId>
     <name>${project.artifactId}</name>
+    <version>0.2-SNAPSHOT</version>
 
     <properties>
         <!-- Skip jar creation -->
@@ -65,16 +66,15 @@
             <groupId>org.emmalanguage</groupId>
             <artifactId>emma-language</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.emmalanguage</groupId>
+            <artifactId>emma-wayang</artifactId>
+        </dependency>
         <!-- Emma (test jars) -->
         <dependency>
             <groupId>org.emmalanguage</groupId>
             <artifactId>emma-language</artifactId>
             <type>test-jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.emmalanguage</groupId>
-            <artifactId>emma-wayang</artifactId>
         </dependency>
 
         <!-- HDFS -->

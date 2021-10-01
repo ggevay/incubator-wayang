@@ -206,6 +206,11 @@
                 <artifactId>emma-examples</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.emmalanguage</groupId>
+                <artifactId>emma-wayang</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- Emma (test jars) -->
             <dependency>
                 <groupId>org.emmalanguage</groupId>

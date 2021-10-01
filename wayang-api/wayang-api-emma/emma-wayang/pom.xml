@@ -28,6 +28,7 @@
 
     <artifactId>emma-wayang</artifactId>
     <name>${project.artifactId}</name>
+    <version>0.2-SNAPSHOT</version>
 
     <properties>
         <!-- Predicates -->

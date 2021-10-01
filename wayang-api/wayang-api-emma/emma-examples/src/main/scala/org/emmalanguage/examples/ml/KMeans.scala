@@ -8,7 +8,7 @@ import scala.util.Random
 @emma.lib
 object KMeans {
 
-  def apply(k: Int, inputFile: String, iterations: Int = 20): Unit = {
+  def apply(k: Int, inputFile: String, iterations: Int = 20): DataBag[Point] = {
 
     val points = DataBag.readText(inputFile)
       .map { line =>
