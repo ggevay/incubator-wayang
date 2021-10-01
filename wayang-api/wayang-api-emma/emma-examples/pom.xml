@@ -72,6 +72,11 @@
             <type>test-jar</type>
         </dependency>
 
+        <dependency>
+            <groupId>org.emmalanguage</groupId>
+            <artifactId>emma-wayang</artifactId>
+        </dependency>
+
         <!-- HDFS -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
