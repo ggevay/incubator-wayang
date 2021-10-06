@@ -37,7 +37,6 @@ trait WayangCompiler extends Compiler
     Core.lift,
     // optimizations
     Core.cse iff "emma.compiler.opt.cse" is true,
-    WayangOptimizations.specializeLoops,// iff "emma.compiler.wayang.native-its" is true,
     Optimizations.foldFusion iff "emma.compiler.opt.fold-fusion" is true,
     Optimizations.addCacheCalls iff "emma.compiler.opt.auto-cache" is true,
     // backend

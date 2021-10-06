@@ -36,6 +36,7 @@ object WayangNtv {
   // Loops
   //----------------------------------------------------------------------------
 
+  // This is currently unused. In the original Emma, FlinkSpecializeLoops uses something like this.
   def repeat[A: Meta](xs: DataBag[A])(
     N: Int, body: DataBag[A] => DataBag[A]
   )(

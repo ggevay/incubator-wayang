@@ -20,13 +20,11 @@ import compiler.Compiler
 import compiler.WayangCompiler
 
 /** Flink-specific optimizations. */
-private[compiler] trait WayangOptimizations extends Compiler
-  with WayangSpecializeLoops {
+private[compiler] trait WayangOptimizations extends Compiler {
   self: WayangCompiler =>
 
   object WayangOptimizations {
-    /** Delegates to [[WayangSpecializeLoops.specializeLoops]]. */
-    lazy val specializeLoops = WayangSpecializeLoops.specializeLoops
+    // Flattening, etc. comes here
   }
 
 }

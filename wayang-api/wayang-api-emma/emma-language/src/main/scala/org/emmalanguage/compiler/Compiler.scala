@@ -17,7 +17,7 @@ package org.emmalanguage
 package compiler
 
 import backend.GenericBackend
-import lang.{AlphaEq, TreeNorm, WrapScalars}
+import lang.{AlphaEq, TreeNorm}
 import lang.core.Core
 import lang.source.Source
 import lib.Lib
@@ -42,8 +42,7 @@ trait Compiler extends AlphaEq
   with Core
   with GenericBackend
   with GraphTools
-  with Optimizations
-  with WrapScalars {
+  with Optimizations {
 
   import UniverseImplicits._
 
