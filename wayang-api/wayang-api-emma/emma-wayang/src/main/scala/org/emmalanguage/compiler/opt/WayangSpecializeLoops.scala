@@ -44,6 +44,7 @@ private[opt] trait WayangSpecializeLoops {
      * and transformations) and should not depend on the iterator variable.
      */
     lazy val specializeLoops = TreeTransform("WayangSpecializeLoops.specializeLoops", tree => {
+      println("WayangSpecializeLoops.specializeLoops")
       val G = ControlFlow.cfg(tree)
       api.BottomUp.withValUses.transformWith({
         case Attr.syn(t@core.Let(
@@ -75,6 +76,7 @@ private[opt] trait WayangSpecializeLoops {
           && is0untilN(vals1, rhs).isDefined =>
 
           val N = is0untilN(vals1, rhs).get
+          println("matched")
 
           val fTpe = api.Type.fun(Seq(xs.info), xs.info)
           val fSym = api.TermSym.free(api.TermName.fresh(api.TermName.lambda), fTpe)
@@ -186,7 +188,8 @@ private[opt] trait WayangSpecializeLoops {
       def unapply(defn: u.DefDef): Option[(u.MethodSymbol, u.Tree)] =
         defn match {
           case api.DefDef(m, _, Seq(Seq()), body)
-            if api.Sym.findAnn[loopBody](m).isDefined => Some(m, body)
+            //if api.Sym.findAnn[loopBody](m).isDefined => Some(m, body)
+            if api.Sym.findAnn[loopBody](m).isDefined => Some(m, WrapScalars.transform(body))
           case _ => None
         }
     }
