@@ -35,32 +35,41 @@ private class libMacro(val c: whitebox.Context) extends MacroCompiler {
 
   /** The implementation of the @emma.lib macro.
    *
-   * The annottee is an object, and all method definitions (`DefDef` nodes) on that object
-   * are converted to Emma library functions.
+   * The annottee is either an object or a class, which will be considered Emma library functions, and thus
+   * inlined.
+   * - For objects, this is simple, because we just need to inline the methods.
+   * - For classes, we need to inline the fields as well. (This is called "scalar replacement" in the compiler
+   * optimization literature.)
    *
-   * @param annottees a list with (currently) exactly one element
+   * @param annottees a list with the tree of an object or a class or a class and an object
    * @return the resulting tree with the replacement
    */
   def inlineImpl(annottees: c.Expr[Any]*): c.Expr[Any] = {
-    ensure(annottees.size == 1, "Only an object can be annotated with @emma.lib.")
-
-    val annottee = annottees.head
-    c.Expr(transformModule(annottee.tree))
+    // https://docs.scala-lang.org/overviews/macros/annotations.html "many-to-many mapping"
+    annottees.map(_.tree) match {
+      case Seq(md @ ModuleDef(_,_,_)) =>
+        c.Expr(transformModule(md))
+      case Seq(cd @ ClassDef(_,_,_,_)) =>
+        c.Expr(transformClassAndModule(cd, createEmptyCompanionFor(cd)))
+      case Seq(cd @ ClassDef(_,_,_,_), md @ ModuleDef(_,_,_)) =>
+        c.Expr(transformClassAndModule(cd, md))
+      case tree: Tree =>
+        c.error(tree.pos, "Unexpected annottee for `@emma.lib` annotation. " +
+          "@emma.lib can be used only on either an object or a class. " +
+          "(When using it on a class, its companion object is automatically considered part of the library.)")
+        c.Expr(tree)
+    }
   }
 
   lazy val transformModule: Tree => Tree = {
-    case tree@ModuleDef(mods, name, Template(parents, self, body)) =>
-      val res = ModuleDef(mods, name, Template(parents, self, body flatMap transformDefDef))
+    case ModuleDef(mods, name, Template(parents, self, body)) =>
+      val res = ModuleDef(mods, name, Template(parents, self, body flatMap transformDefDefOfModule))
       //c.warning(tree.pos, c.universe.showCode(res))
       res
-    case tree: Tree =>
-      // not a module: issue a warning and return
-      c.warning(tree.pos, "Unexpected non-module annottee found for `@emma.lib` annotation.")
-      tree
   }
 
   /**
-   * Transform a DefDef tree.
+   * Transform a DefDef tree that is in a module.
    *
    * This consists of the following tasks if the passed argument is a `DefDef` node.
    *
@@ -85,7 +94,7 @@ private class libMacro(val c: whitebox.Context) extends MacroCompiler {
    * def add(x: Int, y: Int): Int = x + y
    * }}}
    */
-  lazy val transformDefDef: Tree => List[Tree] = {
+  lazy val transformDefDefOfModule: Tree => List[Tree] = {
     case DefDef(mods, name, tparams, vparamss, tpt, rhs)
       if name != api.TermName.init =>
       // clear all existing annotations from the DefDef
@@ -119,5 +128,28 @@ private class libMacro(val c: whitebox.Context) extends MacroCompiler {
   /** Ensure a condition applies or exit with the given error message. */
   def ensure(condition: Boolean, message: => String): Unit =
     if (!condition) c.error(c.enclosingPosition, message)
+
+  def transformClassAndModule(cd: ClassDef, md: ModuleDef): Tree = {
+    ensure(cd.name.toString == md.name.toString, s"Class and supposed companion object name don't match: ${cd.name.toString} == ${md.name.toString}")
+
+    val resCd = cd
+    val resMd = md
+
+    q"""
+        $cd
+        $md"""
+  }
+
+  def createEmptyCompanionFor(cd: ClassDef): ModuleDef = {
+//    case ClassDef(mods, name, tparams, Template(parents, self, body)) =>
+//      import compat._
+//      // See the scaladoc of TemplateExtractor
+//      val selfSym = internal.newTermSymbol(NoSymbol, termNames.WILDCARD, NoPosition, NoFlags)
+//      internal.setInfo(selfSym, NoType)
+//      val template = Template(parents, ValDef(selfSym, EmptyTree), List.empty)
+//      internal.setOwner(selfSym, template.symbol)
+//      ModuleDef(NoMods, TermName(name.toString), template)
+      q"object ${TermName(cd.name.toString)} {}".asInstanceOf[ModuleDef]
+  }
 }
 
