@@ -29,5 +29,10 @@ class InliningTest(c1: Int) {
 }
 
 object InliningTest {
-  val aa = 5
+  val vd = 5
+
+  def bbb(): Int = {
+    val y = 6
+    74
+  }
 }

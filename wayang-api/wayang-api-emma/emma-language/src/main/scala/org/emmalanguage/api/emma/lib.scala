@@ -19,6 +19,7 @@ package api.emma
 import compiler.MacroCompiler
 
 import scala.annotation.{StaticAnnotation, compileTimeOnly}
+import scala.collection.mutable.ListBuffer
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox
 
@@ -129,15 +130,59 @@ private class libMacro(val c: whitebox.Context) extends MacroCompiler {
   def ensure(condition: Boolean, message: => String): Unit =
     if (!condition) c.error(c.enclosingPosition, message)
 
+  // -----------------------
+
+  /**
+   * Creates quoted versions method definitions, and adds annotations with the names of the quoted method definitions.
+   * @return Transformed body (the annotations added to DefDefs), and list of quote ValDefs
+   */
+  def transformBodyAndCollectQuoteDefs(body: List[Tree]): (List[Tree], List[Tree]) = {
+    val quoteDefs = ListBuffer[Tree]()
+    val transformedBody = body.map {
+      case DefDef(mods, name, tparams, vparamss, tpt, rhs)
+        if name != api.TermName.init =>
+        // clear all existing annotations from the DefDef
+        val clrDefDef = DefDef(mods mapAnnotations (_ => List.empty[Tree]), name, tparams, vparamss, tpt, rhs)
+        // create a fresh name for the associated `emma.quote { <defdef code> }` ValDef
+        val nameQ = api.TermName.fresh(s"${name.encodedName}$$Q")
+        // quote the method definition in a `val $nameQx = emma.quote { <defdef code> }
+        val quoteDef = q"val $nameQ = ${API.emma.sym}.quote { $clrDefDef }"
+        // annotate the DefDef with the name of its associated source
+        val annDefDef = DefDef(mods mapAnnotations append(src(nameQ.toString)), name, tparams, vparamss, tpt, rhs)
+        // emit `val $nameQx = emma.quote { <defdef code> }; @emma.src("$nameQx") def $name = ...`
+        quoteDefs += quoteDef
+        annDefDef
+      case tree =>
+        tree
+    }
+    (transformedBody, quoteDefs.toList)
+  }
+
   def transformClassAndModule(cd: ClassDef, md: ModuleDef): Tree = {
     ensure(cd.name.toString == md.name.toString, s"Class and supposed companion object name don't match: ${cd.name.toString} == ${md.name.toString}")
 
-    val resCd = cd
-    val resMd = md
+    val (transformedCd, cdQuoteDefs) = cd match {
+      case ClassDef(mods, name, tparams, Template(parents, self, body)) =>
+        val (transformedBody, quoteDefs) = transformBodyAndCollectQuoteDefs(body)
+        (ClassDef(mods, name, tparams, Template(parents, self, transformedBody)), quoteDefs)
+    }
 
-    q"""
-        $cd
-        $md"""
+    val (transformedMd, mdQuoteDefs) = md match {
+      case ModuleDef(mods, name, Template(parents, self, body)) =>
+        val (transformedBody, quoteDefs) = transformBodyAndCollectQuoteDefs(body)
+        (ModuleDef(mods, name, Template(parents, self, transformedBody)), quoteDefs)
+    }
+
+    val transformedMdPlusQuotes = transformedMd match {
+      case ModuleDef(mods, name, Template(parents, self, body)) =>
+        ModuleDef(mods, name, Template(parents, self, body ++ cdQuoteDefs ++ mdQuoteDefs))
+    }
+
+    val res = q"""
+        $transformedCd
+        $transformedMdPlusQuotes"""
+    println(res)
+    res
   }
 
   def createEmptyCompanionFor(cd: ClassDef): ModuleDef = {
