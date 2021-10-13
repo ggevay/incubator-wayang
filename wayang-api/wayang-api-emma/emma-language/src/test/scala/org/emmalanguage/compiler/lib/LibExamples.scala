@@ -347,7 +347,7 @@ trait LibExamples extends BaseCompilerSpec {
   // Scalar Replacement Test A
   // ---------------------------------------------------------------------------
 
-  lazy val `Scalar Replacement Test A (Original)` = {
+  lazy val `Class Inlining Test A (original)` = {
     reify {
       val o1 = new TestClass(5)
       o1.inc()
@@ -355,13 +355,7 @@ trait LibExamples extends BaseCompilerSpec {
     }
   }
 
-  lazy val `Scalar Replacement Test A (Emma Source)` = {
-    reify {
-
-    }
-  }
-
-  lazy val `Scalar Replacement Test A (normalized)` = {
+  lazy val `Class Inlining Test A (inlined)` = {
     reify {
 
     }

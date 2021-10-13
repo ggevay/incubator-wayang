@@ -163,9 +163,14 @@ private[compiler] trait Lib extends Common {
         ann.tree.collect {
           case src.Lit(fldName: String) =>
             // build an `objSym.fldSym` selection expression
-            val cls = sym.owner.asClass
+//            val cls = sym.owner.asClass
+//            val fld = cls.info.member(api.TermName(fldName)).asTerm
+//            val sel = qualifyStatics(api.DefCall(Some(api.Ref(cls.module)), fld))
+
+            val cls = sym.owner.asClass.companion
             val fld = cls.info.member(api.TermName(fldName)).asTerm
-            val sel = qualifyStatics(api.DefCall(Some(api.Ref(cls.module)), fld))
+            val sel = qualifyStatics(api.DefCall(Some(api.Ref(cls)), fld))
+
             // evaluate `objSym.fldSym` and grab the DefDef source
             val src = eval[String](sel)
             // parse the source and grab the DefDef AST

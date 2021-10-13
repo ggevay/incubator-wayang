@@ -76,13 +76,16 @@ class ExpandSpec extends LibExamples {
     expand(inp) shouldBe alphaEqTo(exp)
   }
 
-  "Scalar Replacement Test A" in {
+  "Class Inlining Test A" in {
 
-    val src = compiler.typeCheck(`Scalar Replacement Test A (Original)`.tree)
-    println(src)
+//    val src = compiler.typeCheck(`Class Inlining Test A (original)`.tree)
+//    println(src)
 
-//    val inp = prePipeline(`Scalar Replacement Test A (Emma Source)`)
-//    val exp = prePipeline(`Scalar Replacement Test A (normalized)`)
+    val inp = prePipeline(`Class Inlining Test A (original)`)
+    expand(inp)
+
+//    val inp = prePipeline(`Class Inlining Test A (original)`)
+//    val exp = prePipeline(`Class Inlining Test A (normalized)`)
 //    expand(inp) shouldBe alphaEqTo(exp)
   }
 }
