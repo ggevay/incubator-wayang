@@ -146,7 +146,8 @@ private class libMacro(val c: whitebox.Context) extends MacroCompiler {
         // create a fresh name for the associated `emma.quote { <defdef code> }` ValDef
         val nameQ = api.TermName.fresh(s"${name.encodedName}$$Q")
         // quote the method definition in a `val $nameQx = emma.quote { <defdef code> }
-        val quoteDef = q"val $nameQ = ${API.emma.sym}.quote { $clrDefDef }"
+        //val quoteDef = q"val $nameQ = ${API.emma.sym}.quote { $clrDefDef }"
+        val quoteDef = q"val $nameQ = ${stringLitFromTree(clrDefDef)}"
         // annotate the DefDef with the name of its associated source
         val annDefDef = DefDef(mods mapAnnotations append(src(nameQ.toString)), name, tparams, vparamss, tpt, rhs)
         // emit `val $nameQx = emma.quote { <defdef code> }; @emma.src("$nameQx") def $name = ...`
@@ -157,6 +158,29 @@ private class libMacro(val c: whitebox.Context) extends MacroCompiler {
     }
     (transformedBody, quoteDefs.toList)
   }
+
+
+  //////////////
+
+  lazy val quotePipeline: Tree => Tree =
+    pipeline()(qualifyThis)
+
+  lazy val qualifyThis = TreeTransform("qualifyThis", api.BottomUp.transform {
+    case api.This(sym) if sym.isClass && sym.isStatic =>
+      api.Ref(sym.asClass.module)
+  }._tree)
+
+  def stringLitFromTree(t: Tree): Tree = {
+    val code = u.showCode(quotePipeline(t))
+    // Maximum String literal length in bytes on the JVM.
+    if (code.getBytes.length > 0xffff) abort(s"Method too large to quote:\n$code", t.pos)
+    api.Lit(code)
+  }
+
+  //////////////
+
+
+
 
   def transformClassAndModule(cd: ClassDef, md: ModuleDef): Tree = {
     ensure(cd.name.toString == md.name.toString, s"Class and supposed companion object name don't match: ${cd.name.toString} == ${md.name.toString}")

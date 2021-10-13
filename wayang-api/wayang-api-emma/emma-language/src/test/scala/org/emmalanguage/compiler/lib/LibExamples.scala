@@ -17,6 +17,7 @@ package org.emmalanguage
 package compiler.lib
 
 import compiler.BaseCompilerSpec
+import org.emmalanguage.lib.TestClass
 
 /** A spec for the `Beta.reduce` transformation. */
 trait LibExamples extends BaseCompilerSpec {
@@ -341,4 +342,29 @@ trait LibExamples extends BaseCompilerSpec {
 
   lazy val `Example H (Emma Core)` =
     liftPipeline(`Example H (Original Expr)`)
+
+  // ---------------------------------------------------------------------------
+  // Scalar Replacement Test A
+  // ---------------------------------------------------------------------------
+
+  lazy val `Scalar Replacement Test A (Original)` = {
+    reify {
+      val o1 = new TestClass(5)
+      o1.inc()
+      o1.f1
+    }
+  }
+
+  lazy val `Scalar Replacement Test A (Emma Source)` = {
+    reify {
+
+    }
+  }
+
+  lazy val `Scalar Replacement Test A (normalized)` = {
+    reify {
+
+    }
+  }
+
 }
